@@ -1,0 +1,1 @@
+ALTER TABLE `order_states` CHANGE `job_order_id` `job_order_id` BIGINT(20) NULL DEFAULT NULL;

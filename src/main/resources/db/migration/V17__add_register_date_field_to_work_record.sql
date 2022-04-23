@@ -1,0 +1,1 @@
+ALTER TABLE `work_records` ADD `register_date` date default NULL
