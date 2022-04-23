@@ -1,0 +1,42 @@
+<legend>Fotos</legend>
+<div class="row">
+    <div *ngFor="let picture of job.pictures" class="col-xl-4 picture-thumbnail">
+        <div class="md-card" class="picture-background" [ngStyle]="{'background-image': picture.id == null ? 'url('+picture.source+')':'url('+picture.thumbnail+')'}">
+            <div class="md-card-item" (click)="picture.clicked = true;classicModal.show()">
+                <div class="saved-picture" *ngIf="picture.id != null"></div>
+            </div>
+            <div class="md-card-offset float-right" *ngIf="claims['admin']">
+                <button (click)="save(picture)" *ngIf="picture.id == null" class="btn btn-success btn-circle btn-lg" type="button">
+                    <span class="fas fa-plus-circle"></span> 
+                </button>
+                <button (click)="main(picture.id)" *ngIf="picture.id != null && !picture.main" class="btn btn-primary btn-circle btn-lg mr-3" type="button">
+                    <span class="fas fa-image"></span> 
+                </button>
+                <button (click)="delete(picture)" class="btn btn-danger btn-circle btn-lg" type="button">
+                    <span class="icon-trash mr"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 picture-thumbnail" *ngIf="claims['admin']">
+        <label class="file-upload float-right upload-picture" for="pictures_upload_button">
+            <button class="btn btn-secondary btn-block">
+                <span class="fas fa-plus-circle"></span>
+            </button>
+            <input #inputUploader id="pictures_upload_button" type="file" ng2FileSelect [uploader]="uploader" (onFileSelected)="onSelected($event)"/>
+        </label>
+    </div>
+</div>
+<div class="modal fade" bsModal #classicModal="bs-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body">
+                <carousel [interval]="0" [noWrap]="false">
+                    <slide *ngFor="let picture of job.pictures; let index=index" [active]="picture.clicked">
+                        <img [src]="picture.regular" class="img-fluid full-width">
+                    </slide>
+                </carousel>
+            </div>
+        </div>
+    </div>
+</div>

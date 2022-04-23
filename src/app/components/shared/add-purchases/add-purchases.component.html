@@ -1,0 +1,43 @@
+<form (ngSubmit)="addPurchase()" #data="ngForm" class="form-validate form-horizontal">
+    <fieldset class="b0">
+        <legend>Datos de la compra</legend>
+    </fieldset>
+    <fieldset>
+        <div class="form-group row">
+            <label class="col-lg-3 col-form-label text-lg-right">Comprador</label>
+            <div class="col-lg-7">
+                <input [(ngModel)]="purchase.buyer" required class="form-control" type="text" name="buyer" />
+            </div>
+            <div class="col-lg-2">
+                <small class="text-muted">* Dato obligatorio</small>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <div class="form-group row">
+            <label class="col-lg-3 col-form-label text-lg-right">Número de factura</label>
+            <div class="col-lg-7">
+                <input [(ngModel)]="purchase.bill_number" class="form-control" type="text" name="bill_number" />
+            </div>
+            <div class="col-lg-2">
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <div class="form-group row">
+            <label class="col-lg-3 col-form-label text-lg-right">Sector destinatario de la compra</label>
+            <div class="col-lg-7">
+                <select class="custom-select custom-select-sm" [(ngModel)]="purchase.sector" name="sector" required>
+                    <option disable [attr.selected]="purchase.sector == null ? true : null" >Seleccione sector</option>
+                    <option *ngFor="let sector of sectors" [ngValue]="sector" [attr.selected]="(purchase.sector != null && sector.id == purchase.sector.id) ? true : null">{{sector.name}}</option>
+                </select>
+            </div>
+            <div class="col-lg-2">
+                <small class="text-muted">* Dato obligatorio</small>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <button class="btn btn-info float-right" type="submit">Guardar</button>
+    </fieldset>
+</form>

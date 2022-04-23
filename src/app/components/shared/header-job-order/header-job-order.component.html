@@ -1,0 +1,29 @@
+<div class="card-header col-12 float-left">
+    <div class="float-right mt-2">
+        <div class="badge badge-info">
+            <inline-editor *ngIf="jobOrder.kind != null && claims['admin']" empty="Sin selección" type="select" [(ngModel)]="jobOrder.kind.name" (onSave)="save($event, 'description')" name="job_ordr_kind" size="50" [options]="kindsName" class="job-order-kind"></inline-editor>
+            {{!claims['admin'] ? jobOrder.kind.name : ''}}
+        </div>
+    </div>
+    <h4 class="my-2">
+        <div class="order-number">Orden de compra #</div>
+        <inline-editor *ngIf="claims['admin']" placeholder="Ingrese n° de orden" empty="  -   " type="text" [(ngModel)]="jobOrder.purchase_order_number" (onSave)="save($event)" name="job_order_purchase_order_number" size="250" class="purchase-order-editor"></inline-editor>
+        <div *ngIf="!claims['admin']" class="order-number">{{jobOrder.purchase_order_number}}</div>
+    </h4>
+</div>
+
+<div class="card-body col-12 float-left">
+    <h4>Especificación técnica</h4>
+    <p>
+        <inline-editor *ngIf="claims['admin']" placeholder="Ingrese especificación técnica" empty="-" type="text" [(ngModel)]="jobOrder.description" (onSave)="save($event)" name="job_order_description" size="250" class="job-order-description"></inline-editor>
+        {{!claims['admin'] ? jobOrder.description : ''}}
+    </p>
+
+</div>
+<div class="card-body col-12 float-left">
+    <h4>Observaciones</h4>
+    <p>
+        <inline-editor *ngIf="claims['admin']" placeholder="Ingrese observaciones" empty="-" type="text" [(ngModel)]="jobOrder.observations" (onSave)="save($event)" name="job_order_observations" size="250" class="job-order-observations"></inline-editor>
+        {{!claims['admin'] ? jobOrder.observations : ''}}
+    </p>
+</div>

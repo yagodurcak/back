@@ -1,0 +1,45 @@
+<div class="content-heading">Listado de proveedores</div>
+<div class="row">
+    <div class="col-12">
+        <button (click)="addProvider()" class="mb-1 mr-1 btn btn-success float-right" type="button">Nuevo proveedor</button>
+    </div>
+    <div class="col-12 mt-3">
+        <div class="card card-default">
+            <!-- START table-responsive-->
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nombre</th>
+                            <th>Dirección</th>
+                            <th>Descripción</th>
+                            <th>Contacto</th>
+                            <th>Teléfono</th>
+                            <th>mail</th>
+                            <th>CUIT</th>
+                            <th class="actions-column-3">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let provider of providers">
+                            <td>{{ provider.id }}</td>
+                            <td>{{ provider.name }}</td>
+                            <td>{{ provider.address }}</td>
+                            <td>{{ provider.description }}</td>
+                            <td>{{ provider.contact }}</td>
+                            <td>{{ provider.phone }}</td>
+                            <td>{{ provider.mail }}</td>
+                            <td>{{ provider.cuit }}</td>
+                            <td>
+                                <button class="mb-1 mr-1 btn btn-primary" type="button" (click)=editProvider(provider.id)><i class="fas fa fa-edit"></i></button>
+                                <button class="mb-1 mr-1 btn btn-danger" type="button" (click)=deleteProvider(provider.id)><i class="fas fa fa-trash-alt"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- END table-responsive-->
+        </div>
+    </div>
+</div>

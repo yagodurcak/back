@@ -1,0 +1,312 @@
+<div class="content-heading">
+    <div>
+        Compra #{{purchase.id}}
+        <small class="pt-2">{{ purchase.created | date:'dd/MM/yyyy'}}</small>
+    </div>
+</div>
+<app-header-purchase class="row" [purchase]="purchase"></app-header-purchase>
+<div class="row">
+    <div class="col-xl-8">
+        <!-- Main card-->
+        <div *ngIf="purchase.requisitions.length" class="card b p-3">
+            <legend>Requisiciones</legend>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Descripción</th>
+                                        <th>Motivo</th>
+                                        <th>Solicitado para</th>
+                                        <th>Prioridad</th>
+                                        <th>Sector solicitante</th>
+                                        <th>Sector destino</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let requisition of purchase.requisitions">
+                                        <td>{{ requisition.amount }}</td>
+                                        <td>{{ requisition.description }}</td>
+                                        <td>{{ requisition.reason }}</td>
+                                        <td>{{ requisition.requesting_date }}</td>
+                                        <td>{{ priorities[requisition.priority]}}</td>
+                                        <td>{{ requisition.requesting_sector.name }}</td>
+                                        <td>{{ requisition.destination_sector.name }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-info btn-xs m-1" (click)="viewRequisition(requisition.id)">
+                                                <span class="fa fa-file-alt"></span> 
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-xs m-1" (click)="unlinkRequisition(requisition)">
+                                                <span class="fa fa-trash"></span> 
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card b p-3">
+            <legend>Presupuestos</legend>
+            <div class="row">
+                <div class="col-12">
+                    <label for="plane" class="file-upload float-right">
+                        <button class="btn btn-secondary btn-block" (click)="addBudgets()" [disabled]="addingBudget">Agregar presupuestos</button>
+                    </label>
+                </div>
+                <div *ngIf="purchase.budgets.length" class="col-12" style="margin-bottom: 40px">
+                    <div class="row">
+                        <div class="col-12">
+                            <tabset class="bg-white p-0" justified="true">
+                                <tab *ngFor="let budget of purchase.budgets;let i = index;">
+                                    <ng-template tabHeading>
+                                        {{ budget?.provider?.name ? budget?.provider?.name : (presupuesto + (i + 1))}}
+                                    </ng-template>
+                                    <div>
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <div class="float-right">
+                                                    <button class="mb-1 mr-1 btn btn-warning p-1 pl-2 pr-2" type="button" [hidden]="!budget.id" (click)="budget.sent = !budget.sent;save() ">
+                                                        <i class="fas " [ngClass]="{'fa-envelope': !budget.sent, 'fa-envelope-open': budget.sent}"></i>
+                                                    </button>
+                                                    <button class="mb-1 mr-1 btn btn-green p-1 pl-2 pr-2" type="button" [hidden]="!budget?.id" (click)="budget.selected = !budget.selected;save() ">
+                                                        <i class="fas " [ngClass]="{'icon-check': !budget.selected, 'icon-close': budget.selected}"></i>
+                                                    </button>
+                                                    <button class="mb-1 mr-1 btn btn-info p-1 pl-2 pr-2" type="button" [hidden]="!budget.selected" (click)="budgetSelected = budget;addPurchaseOrderModal.show()">
+                                                        <i class="fas fa-clipboard-list"></i>
+                                                    </button>
+                                                    <button (click)="purchaseOrderToPrint = budget.purchase_order;print()" class="mb-1 mr-1 btn btn-green p-1 pl-2 pr-2" type="button" [hidden]="!(budget.selected && budget.purchase_order?.id)">
+                                                        <i class="fas fa-print text-white"></i>
+                                                    </button>
+                                                    <button (click)="deleteBudget(i)" class="mb-1 mr-1 btn btn-danger p-1 pl-2 pr-2" type="button">
+                                                        <i class="icon-close"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <fieldset>
+                                                    <div class="form-group row">
+                                                        <div class="col-lg-12">
+                                                            <label class="col-form-label text-lg-right">Proveedor</label>
+                                                            <input autocomplete="off" [(ngModel)]="budget.provider.name" [typeahead]="providers" [typeaheadOptionField]="'name'" (typeaheadOnSelect)="typeaheadProviderOnSelect($event, i)" class="form-control" name="budget[{{i}}]_provider_name">
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                                <fieldset>
+                                                    <div class="form-group row">
+                                                        <div class="col-lg-12">
+                                                            <label class="col-form-label text-lg-right">Descripción</label>
+                                                            <div class="card">
+                                                                <div class="card-body mh0">
+                                                                    <textarea [(ngModel)]="budget.message" class="form-control note-editor" type="text" name="budget[{{i}}]_message" rows="5"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                                <fieldset>
+                                                    <div class="text-right">
+                                                        <button class="btn btn-info" type="button" (click)="save();">Guardar presupuesto</button>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </tab>
+                            </tabset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card b p-3">
+            <legend>Entregas</legend>
+            <div class="row">
+                <div class="col-12">
+                    <label for="plane" class="file-upload float-right">
+                        <button class="btn btn-secondary btn-block">Agregar descarga</button>
+                        <input #inputUploaderDelivery id="purchase_delivery_upload_button" type="file" ng2FileSelect [uploader]="uploader" (onFileSelected)="onPurchaseDeliveryDocumentSelected($event)"/>
+                    </label>
+                </div>
+                <div class="col-12" style="margin-bottom: 40px">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="float-right badge badge-info" *ngIf="purchase.deliveries?.length">Cantidad: {{ purchase.deliveries?.length }}</p>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th width="40%">Descripción</th>
+                                        <th>Remito</th>
+                                        <!-- <th>Tipo</th> -->
+                                        <th class="text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let delivery of purchase.deliveries">
+                                        <td>
+                                            <div *ngIf="delivery.id == null" class="form-group row">
+                                                <input [(ngModel)]="delivery.description" required class="form-control" type="text" name="delivery_description[]" />
+                                            </div>
+                                            <strong *ngIf="delivery.id != null">{{ delivery.description }}</strong>
+                                        </td>
+                                        <td>
+                                            <div *ngIf="delivery.id == null" class="form-group row">
+                                                <input [(ngModel)]="delivery.remit_number" required class="form-control" type="text" name="delivery_remit_number[]" />
+                                            </div>
+                                            <strong *ngIf="delivery.id != null">{{ delivery.remit_number }}</strong>
+                                        </td>
+                                        <!-- <td>
+                                            <select *ngIf="delivery.id == null" class="custom-select custom-select-sm" [(ngModel)]="delivery.kind" name="delivery_kind[]" required>
+                                                <option *ngFor="let kind of kindPlanes" [ngValue]="kind" [attr.selected]="kind.id == delivery.kind?.id ? true : null">{{kind.name}}</option>
+                                            </select>
+                                            <strong *ngIf="delivery.id != null">{{ delivery.kind?.name }}</strong>
+                                        </td> -->
+                                        <td class="text-center">
+                                            <button *ngIf="delivery.id == null" type="button" class="btn btn-info btn-xs m-1" (click)="saveDelivery(delivery)" [disabled]="delivery.description.length == 0 || delivery.kind == null">
+                                                <span class="fa icon-cloud-upload mr"></span> Guardar
+                                            </button>
+                                            <a *ngIf="delivery.id != null" class="btn btn-info btn-xs m-1" href="{{ delivery.source }}" target="_blank">
+                                                <span class="fas fa-external-link-alt mr"></span>
+                                            </a>
+                                            <button type="button" class="btn btn-danger btn-xs m-1" (click)="deleteDelivery(delivery)">
+                                                <span class="icon-trash mr"></span> 
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card b p-3">
+            <app-documents-purchase [purchase]="purchase"></app-documents-purchase>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <!-- Aside card-->
+        <div class="card b">
+            <app-states-purchase [states]="purchase.states" [purchaseId]="purchase.id" [currentState]="currentState"></app-states-purchase>
+        </div>
+        <!-- end Aside card-->
+    </div>
+</div>
+<div class="modal fade" bsModal #addBudgetsModal="bs-modal" tabindex="-1" role="dialog" aria-labelledby="addBudgetsModal" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <legend>Generar presupuestos</legend>
+                <button aria-label="Close" class="close" type="button" data-dismiss="modal" (click)="addBudgetsModal.hide()"><span aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <tabset class="bg-white p-0" justified="true">
+                            <tab *ngFor="let budget of purchase.budgets">
+                                <ng-template tabHeading>
+                                    <em class="far fa-money-bill-alt fa-fw"></em>{{budget.provider.name}}
+                                </ng-template>
+                                <div>
+
+                                </div>
+                            </tab>
+                            <tab class="w-25">
+                                <ng-template tabHeading>
+                                    <em class="far fa-money-bill-alt fa-fw"></em>Agregar presupuesto
+                                </ng-template>
+                            </tab>
+                        </tabset>
+                    </div>
+                </div>
+                <fieldset>
+                    <div class="text-right">
+                        <button class="btn btn-info" type="button" (click)="save();">Guardar presupuestos</button>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" bsModal #addDeliveryModal="bs-modal" tabindex="-1" role="dialog" aria-labelledby="addDeliveryModal" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <legend>Agregar entrega</legend>
+                <button aria-label="Close" class="close" type="button" data-dismiss="modal" (click)="addDeliveryModal.hide()"><span aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                <fieldset>
+                    <div class="form-group row">
+                        <label class="col-lg-2 col-form-label text-lg-right">Descripción</label>
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="card-body mh0">
+                                    <textarea [(ngModel)]="purchaseDelivery.description" class="form-control note-editor" type="text" name="purchase_delivery_description" rows="5"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <small class="text-muted">* Dato obligatorio</small>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <div class="form-group row">
+                        <label class="col-lg-2 col-form-label text-lg-right">Remito</label>
+                        <div class="col-lg-8">
+                            <input [(ngModel)]="purchaseDelivery.remit_number" required class="form-control" type="text" name="purchase_delivery_remit_number" />
+                        </div>
+                        <div class="col-lg-2">
+                            <small class="text-muted">* Dato obligatorio</small>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <div class="form-group row">
+                        <label class="col-lg-2 col-form-label text-lg-right">Documento</label>
+                        <div class="col-lg-8">
+                            <label class="label label-success">
+                                
+                            </label>
+                            <label for="purchas_delivery_document" class="file-upload float-right">
+                                <button class="btn btn-secondary btn-block">Subir documento</button>
+                                <input #inputUploaderDeliveryDocument id="purchas_delivery_document" type="file" ng2FileSelect [uploader]="uploader" (onFileSelected)="onPurchaseDeliveryDocumentSelected($event)"/>
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            <small class="text-muted">* Dato obligatorio</small>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <div class="text-right" *ngIf="purchaseDelivery.description != null && purchaseDelivery.remit_number != null">
+                        <button class="btn btn-info" type="button" (click)="saveDelivery(addBudgetsModal);">Guardar presupuestos</button>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" bsModal #addPurchaseOrderModal="bs-modal" (onHidden)="budgetSelected = null" tabindex="-1" role="dialog" aria-labelledby="addPurchaseOrderModal" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <legend>Generar nota de pedido</legend>
+                <button aria-label="Close" class="close" type="button" data-dismiss="modal" (click)="addPurchaseOrderModal.hide()"><span aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                <app-save-purchase-orders *ngIf="budgetSelected" [purchase]="purchase" [budget]="budgetSelected" (savedPurchaseOrder)="purchase = $event;addPurchaseOrderModal.hide();budgetSelected = null;"></app-save-purchase-orders>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="print-dialog" *ngIf="purchaseOrderToPrint">
+    <app-print-purchase-orders [purchaseOrder]="purchaseOrderToPrint"></app-print-purchase-orders>
+</div>

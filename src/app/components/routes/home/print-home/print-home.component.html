@@ -1,0 +1,67 @@
+<table class="table table-striped table-bordered table-hover">
+  <thead>
+    <tr>
+      <th style="width:175px;">Datos de OT</th>
+      <th style="width:175px;">Estado</th>
+      <th style="width:250px;">Datos del Trabajo</th>
+      <th style="width:350px;">Foto</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let jobOrder of jobOrders">
+      <ng-container *ngIf="isBackward(jobOrder.compromised_date)">
+        <td>
+          <strong>OT:</strong> {{ jobOrder.id }}<br>
+          <strong>N° de OC:</strong> {{ jobOrder.purchase_order_number }}<br>
+          <strong>Tipo:</strong> {{ jobOrder.kind.name }}<br>
+          <strong>F. CCC:</strong> {{ jobOrder.compromised_date }}<br>
+          <strong>Cantidad:</strong> {{ jobOrder.jobs_amount }}
+        </td>
+        <td class="text-center">
+          <span class="badge" [ngClass]="{'badge-success': jobOrder.current_state == 'En proceso activo', 'badge-warning': jobOrder.current_state == 'Pendiente', 'badge-danger': jobOrder.current_state == 'En proceso frenado', 'badge-info':jobOrder.current_state == 'Terminado'}">
+            {{ jobOrder.current_state}}
+          </span>
+          <br><br>
+          <span [sparkline]="sparkOptionPie" values="{{ jobOrder.percentage_advance / 10 }},{{ 10 - jobOrder.percentage_advance / 10 }}"></span></td>
+        <td>
+          <strong>{{ jobOrder.job.number }}</strong><br>
+          {{ jobOrder.job.description }}
+        </td>
+        <td>
+          <div class="col-12">
+            <div style="" *ngIf="jobOrder.job.pictures?.length > 0" class="md-card" class="picture-background" [ngStyle]="{'background-image': jobOrder.job.pictures[0].backgroundImage}"></div>
+          </div>
+        </td>
+      </ng-container>
+    </tr>
+    <tr *ngIf="jobOrders?.length > 0" class="bg-gray-dark">
+      <td colspan="4"></td>
+    </tr>
+    <tr *ngFor="let jobOrder of jobOrders">
+      <ng-container *ngIf="!isBackward(jobOrder.compromised_date)">
+        <td>
+          <strong>OT:</strong> {{ jobOrder.id }}<br>
+          <strong>N° de OC:</strong> {{ jobOrder.purchase_order_number }}<br>
+          <strong>Tipo:</strong> {{ jobOrder.kind.name }}<br>
+          <strong>F. CCC:</strong> {{ jobOrder.compromised_date }}<br>
+          <strong>Cantidad:</strong> {{ jobOrder.jobs_amount }}
+        </td>
+        <td class="text-center">
+          <span class="badge" [ngClass]="{'badge-success': jobOrder.current_state == 'En proceso activo', 'badge-warning': jobOrder.current_state == 'Pendiente', 'badge-danger': jobOrder.current_state == 'En proceso frenado', 'badge-info':jobOrder.current_state == 'Terminado'}">
+            {{ jobOrder.current_state}}
+          </span>
+          <br><br>
+          <span [sparkline]="sparkOptionPie" values="{{ jobOrder.percentage_advance / 10 }},{{ 10 - jobOrder.percentage_advance / 10 }}"></span></td>
+        <td>
+          <strong>{{ jobOrder.job.number }}</strong><br>
+          {{ jobOrder.job.description }}
+        </td>
+        <td>
+          <div class="col-12">
+            <div style="" *ngIf="jobOrder.job.pictures?.length > 0" class="md-card" class="picture-background" [ngStyle]="{'background-image': jobOrder.job.pictures[0].backgroundImage}"></div>
+          </div>
+        </td>
+      </ng-container>
+    </tr>
+    </tbody>
+  </table>

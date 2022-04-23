@@ -1,0 +1,116 @@
+<div class="content-heading">Listado de requisiciones</div>
+<div class="row">
+    <div class="col-8">
+        <div class="btn-group">
+            <label class="btn btn-primary" [(ngModel)]="state" (click)="findAll()" btnRadio="Activos" *ngIf="claims['admin'] || claims['purchase']">Activos</label>
+            <label class="btn btn-primary" [(ngModel)]="state" (click)="findAll()" btnRadio="Pendiente">Pendiente</label>
+            <label class="btn btn-primary" [(ngModel)]="state" (click)="findAll()" btnRadio="Iniciado">Iniciado</label>
+            <label class="btn btn-primary" [(ngModel)]="state" (click)="findAll()" btnRadio="Facturado">Facturado</label>
+            <label class="btn btn-primary" [(ngModel)]="state" (click)="findAll()" btnRadio="Recibido">Recibido</label>
+            <label class="btn btn-primary" [(ngModel)]="state" (click)="findAll()" btnRadio="Finalizado" *ngIf="claims['admin'] || claims['purchase']">Finalizado</label>
+            <label class="btn btn-primary" [(ngModel)]="state" (click)="findAll()" btnRadio="Anulado" *ngIf="claims['admin'] || claims['purchase']">Anulado</label>
+        </div>
+    </div>
+    <div class="col-4">
+        <button (click)="addRequisition()" class="mb-1 mr-1 btn btn-success float-right" type="button">Nueva requisición</button>
+        <button *ngIf="addToPurchase() && claims['admin'] || claims['purchase']" (click)="addPurchaseModal.show()" class="mb-1 mr-1 btn btn-success float-right" type="button">Agregar a compra</button>
+    </div>
+    <div class="col-12 mt-3">
+        <div class="card card-default">
+            <div class="card-header" style="border-bottom: 1px solid #eee;">
+                <div class="mb-3">
+                    <div class="input-group">
+                        <input class="form-control" type="text" placeholder="Ingrese dato que desea buscar" [(ngModel)]="query" />
+                    </div>
+                </div>
+              <pagination class="col-md-9 col-sm-12 " [maxSize]="5 " [rotate]="false " [directionLinks]="false " [itemsPerPage]="userPageSize " [totalItems]="totalElements " [(ngModel)]="currentPage " (pageChanged)="pageChanged($event) "></pagination>
+              <div class="col-md-3 col-sm-12 ">
+                <div class="input-group float-right ">
+                  <select class="custom-select " id="inputGroupSelect04 " [(ngModel)]="userPageSize " (change)="findAll() ">
+                    <option value="0 ">Tamaño de página</option>
+                    <option value="5 ">5</option>
+                    <option value="10 ">10</option>
+                    <option value="20 ">20</option>
+                    <option value="50 ">50</option>
+                    <option value="100 ">100</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <!-- START table-responsive-->
+            <div class="table-responsive ">
+                <table class="table table-striped table-bordered table-hover " id="table-ext-1 ">
+                    <thead>
+                        <tr>
+                            <th>N°</th>
+                            <th>Estado</th>
+                            <th>Unidad de medida</th>
+                            <th>Cantidad</th>
+                            <th>Descripción</th>
+                            <th>Motivo</th>
+                            <th>Solicitado para</th>
+                            <th>Prioridad</th>
+                            <th>Solicitante</th>
+                            <th>Sector solicitante</th>
+                            <th>Sector destino</th>
+                            <th *ngIf="claims['admin'] || claims['purchase']">Compra</th>
+                            <th class="actions-column-3 ">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let requisition of requisitions | filter:query">
+                            <td>{{ requisition.id }}</td>
+                            <td class="text-center ">
+                                <span class="badge " [ngClass]="{
+                                    'badge-warning': requisition.state=='Pendiente' ,
+                                    'badge-green': requisition.state=='Iniciado' ,
+                                    'badge-purple':requisition.state=='Facturado' ,
+                                    'badge-success': requisition.state=='Recibido' ,
+                                    'badge-danger':requisition.state=='Anulado' }
+                                    ">
+                                    {{ requisition.state}}
+                                </span>
+                            </td>
+                            <td>{{ requisition.unit_of_measurement }}</td>
+                            <td>{{ requisition.amount }}</td>
+                            <td>{{ requisition.description }}</td>
+                            <td>{{ requisition.reason }}</td>
+                            <td>{{ requisition.requesting_date }}</td>
+                            <td>{{ priorities[requisition.priority]}}</td>
+                            <td>{{ requisition.user.display_name}}</td>
+                            <td>{{ requisition.requesting_sector.name }}</td>
+                            <td>{{ requisition.destination_sector.name }}</td>
+                            <td *ngIf="claims['admin'] || claims['purchase']" class="text-center">
+                                <a *ngIf="requisition.purchaseId != null" target="_blank" [routerLink]="['/purchases', 'view', requisition.purchaseId]"><span class="badge badge-success">{{ requisition.purchaseId }}</span></a>
+                                <div *ngIf="requisition.purchaseId == null" class="checkbox c-checkbox">
+                                    <label>
+                                        <input type="checkbox" [(ngModel)]="requisition.addToPurchase"/>
+                                        <span class="fa fa-check"></span>
+                                    </label>
+                                </div>
+                            </td>
+                            <td class="actions-column-3 ">
+                                <button class="mb-1 mr-1 btn btn-info " type="button " (click)=viewRequisition(requisition.id)><i class="fas fa-file-alt "></i></button>
+                                <button class="mb-1 mr-1 btn btn-danger " type="button " (click)=deleteRequisition(requisition.id)><i class="fas fa-trash "></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- END table-responsive-->
+        </div>
+    </div>
+</div>
+<div [hidden]="!claims['admin'] && !claims['purchase']" class="modal fade" bsModal #addPurchaseModal="bs-modal" tabindex="-1" role="dialog" aria-labelledby="addPurchaseModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <legend>Nueva compra</legend>
+                <button aria-label="Close" class="close" type="button" data-dismiss="modal" (click)="addPurchaseModal.hide()"><span aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                <app-add-purchases [purchase]="purchase" [requisitions]="requisitions" (savedPurchase)="viewPurchase($event.id)"></app-add-purchases>
+            </div>
+        </div>
+    </div>
+</div>

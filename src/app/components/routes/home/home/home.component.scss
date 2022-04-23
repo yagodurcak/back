@@ -1,0 +1,57 @@
+@import "../../../shared/styles/bootstrap/_functions.scss";
+@import "../../../shared/styles/bootstrap/_variables.scss";
+@import "../../../shared/styles/bootstrap/_mixins";
+@import '../../../shared/styles/app/variables.scss';
+.home-container {
+    margin: 0 auto;
+    max-width: map-get($container-max-widths, "lg");
+    .home-logo {
+        width: 240px;
+    }
+    .home-text {
+        text-align: center;
+        @include media-breakpoint-up(lg) {
+            text-align: left;
+        }
+    }
+    .home-text-big {
+        margin-top: 1.3125rem;
+        font-size: 3.9375rem;
+    }
+}
+
+.picture-background {
+    background-size: cover;
+    background-position: top;
+    width: 300px;
+    height: 200px;
+    min-height: 0;
+    margin: 0;
+}
+
+.print-dialog {
+  display: none !important;
+}
+
+@media print {
+  body {
+    background: white;
+  }
+  .row,
+  nav,
+  .aside-container,
+  .aside-inner,
+  .content-heading {
+    display: none !important;
+    opacity: 0 !important;
+    background-color: transparent !important;
+  }
+  .print-dialog {
+    display: table !important;
+    table-layout: fixed;
+    //padding-top: 2.5cm;
+    //padding-left: 2.5cm;
+    width: 100%;
+    background: white;
+  }
+}

@@ -1,0 +1,52 @@
+table .job-in-date .form-inline .form-control,
+table .job-compromised-date .form-inline .form-control,
+table .job-budgeted-hours .form-inline .form-control,
+table .job-jobs-amount .form-inline .form-control,
+table .job-delivery-date .form-inline .form-control,
+table .job-real-hours-production .form-inline .form-control,
+table .job-bill-number .form-inline .form-control,
+table .job-remit-number .form-inline .form-control {
+    color: rgba(0, 0, 0, 0.8) !important;
+    background-color: white !important;
+    border: 0 !important;
+    font-family: "Roboto", sans-serif !important;
+    font-size: 0.875rem !important;
+    padding: 0 !important;
+    height: 15px !important;
+    width: 140px !important;
+}
+
+table .job-in-date .form-inline .form-group,
+table .job-compromised-date .form-inline .form-group,
+table .job-budgeted-hours .form-inline .form-group,
+table .job-jobs-amount .form-inline .form-group,
+table .delivery-date .form-inline .form-group,
+table .job-real-hours-production .form-inline .form-group,
+table .job-bill-number .form-inline .form-group,
+table .job-remit-number .form-inline .form-group {
+    width: 100%;
+}
+
+.print-dialog {
+    display: none !important;
+}
+
+@media print {
+    body {
+        background: white;
+    }
+    .modal,
+    .row,
+    .aside-container,
+    .content-heading {
+        display: none !important;
+    }
+    .print-dialog {
+        display: table !important;
+        table-layout: fixed;
+        padding-top: 2.5cm;
+        padding-left: 2.5cm;
+        width: 100%;
+        background: white;
+    }
+}

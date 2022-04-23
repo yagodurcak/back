@@ -1,0 +1,58 @@
+<form (ngSubmit)="addJob()" #data="ngForm" class="form-validate form-horizontal">
+    <fieldset class="b0">
+        <legend>Datos del trabajo</legend>
+    </fieldset>
+    <fieldset>
+        <div class="form-group row">
+            <label class="col-lg-2 col-form-label text-lg-right">Número</label>
+            <div class="col-lg-8">
+                <input [(ngModel)]="job.number" required class="form-control" type="text" name="number" />
+            </div>
+            <div class="col-lg-2">
+                <small class="text-muted">* Dato obligatorio</small>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <div class="form-group row">
+            <label class="col-lg-2 col-form-label text-lg-right">Descripción</label>
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body mh0">
+                        <textarea [(ngModel)]="job.description" class="form-control note-editor" type="text" name="description" rows="5"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2">
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <div class="form-group row">
+            <label class="col-lg-2 col-form-label text-lg-right">Número de item</label>
+            <div class="col-lg-8">
+                <input [(ngModel)]="job.item" required class="form-control" type="text" name="item" />
+            </div>
+            <div class="col-lg-2">
+                <small class="text-muted">* Dato obligatorio</small>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <div class="form-group row">
+            <label class="col-lg-2 col-form-label text-lg-right">Tipo</label>
+            <div class="col-lg-8">
+                <select class="custom-select custom-select-sm" [(ngModel)]="job.kind" name="kind" required>
+                    <option disable [attr.selected]="job.kind == null ? true : null" >Seleccione tipo</option>
+                    <option *ngFor="let kind of kinds" [ngValue]="kind" [attr.selected]="(job.kind != null && kind.id == job.kind.id) ? true : null">{{kind.name}}</option>
+                </select>
+            </div>
+            <div class="col-lg-2">
+                <small class="text-muted">* Dato obligatorio</small>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <button class="btn btn-info float-right" type="submit">Guardar</button>
+    </fieldset>
+</form>

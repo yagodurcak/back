@@ -1,0 +1,96 @@
+<div class="content-heading">Listado de compras</div>
+<div class="row">
+    <div class="col-8">
+        <div class="btn-group">
+            <label class="btn btn-primary" [(ngModel)]="state" (click)="findAll()" btnRadio="">Todos</label>
+            <label class="btn btn-primary" [(ngModel)]="state" (click)="findAll()" btnRadio="Activos">Activos</label>
+            <label class="btn btn-primary" [(ngModel)]="state" (click)="findAll()" btnRadio="Iniciado">Iniciado</label>
+            <label class="btn btn-primary" [(ngModel)]="state" (click)="findAll()" btnRadio="Facturado">Facturado</label>
+            <label class="btn btn-primary" [(ngModel)]="state" (click)="findAll()" btnRadio="Recibido">Recibido</label>
+            <label class="btn btn-primary" [(ngModel)]="state" (click)="findAll()" btnRadio="Finalizado">Finalizado</label>
+            <label class="btn btn-primary" [(ngModel)]="state" (click)="findAll()" btnRadio="Anulado">Anulado</label>
+        </div>
+    </div>
+    <div class="col-4">
+        <button (click)="addPurchase()" class="mb-1 mr-1 btn btn-success float-right" type="button">Nueva compra</button>
+    </div>
+    <div class="col-12 mt-3">
+        <div class="card card-default">
+            <div class="card-header" style="border-bottom: 1px solid #eee;">
+                <div class="mb-3">
+                    <div class="input-group">
+                        <input class="form-control" type="text" placeholder="Ingrese dato que desea buscar" [(ngModel)]="query" (keydown.enter)="findAll()" />
+                        <div class=" input-group-append ">
+                            <button class="btn btn-secondary " type="Search " (click)="findAll() ">Buscar</button>
+                        </div>
+                    </div>
+                </div>
+              <div class="row ">
+                <pagination class="col-md-9 col-sm-12 " [maxSize]="5 " [rotate]="false " [directionLinks]="false " [itemsPerPage]="userPageSize " [totalItems]="totalElements " [(ngModel)]="currentPage " (pageChanged)="pageChanged($event) "></pagination>
+                <div class="col-md-3 col-sm-12 ">
+                  <div class="input-group float-right ">
+                    <select class="custom-select " id="inputGroupSelect04 " [(ngModel)]="userPageSize " (change)="findAll() ">
+                      <option value="0 ">Tamaño de página</option>
+                      <option value="10 ">10</option>
+                      <option value="20 ">20</option>
+                      <option value="50 ">50</option>
+                      <option value="100 ">100</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- START table-responsive-->
+            <div class="table-responsive ">
+                <table class="table table-striped table-bordered table-hover " id="table-ext-1 ">
+                    <thead>
+                        <tr>
+                            <th>N°</th>
+                            <th>Nota de Pedido</th>
+                            <th>Proveedor</th>
+                            <th>Comprador</th>
+                            <th>N° de factura</th>
+                            <th>Estado</th>
+                            <th>Usuario</th>
+                            <th>Sector</th>
+                            <th class="actions-column-1 ">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let purchase of purchases ">
+                            <td>{{ purchase.id }}</td>
+                            <td><p [innerHTML]="purchase.purchase_orders_id"></p></td>
+                            <td>
+                              <ul>
+                                <li *ngFor="let budget of purchase.budgets">{{ budget.provider.name }}</li>
+                              </ul>
+                            </td>
+                            <td>{{ purchase.buyer }}</td>
+                            <td>{{ purchase.bill_number }}</td>
+                            <td>{{ purchase.current_state }}</td>
+                            <td>{{ purchase.user.display_name }}</td>
+                            <td>{{ purchase.sector.name}}</td>
+                            <td class="actions-column-3 ">
+                                <button class="mb-1 mr-1 btn btn-info " type="button " (click)=viewPurchase(purchase.id)><i class="fas fa-file-alt "></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- END table-responsive-->
+        </div>
+    </div>
+</div>
+<div class="modal fade" bsModal #addPurchaseModal="bs-modal" tabindex="-1" role="dialog" aria-labelledby="addPurchaseModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <legend>Datos de compra</legend>
+                <button aria-label="Close" class="close" type="button" data-dismiss="modal" (click)="addPurchaseModal.hide()"><span aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                <app-add-purchases [purchase]="purchase" [requisitions]="[]" (savedPurchase)="viewPurchase($event.id)"></app-add-purchases>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,89 @@
+<div class="row">
+    <button class="mb-1 mr-1 btn btn-info float-right arrow-button" *ngIf="jobStack.length > 0" (click)="goBackJob()">
+        <em class="fa-2x mr-2 fas fa-angle-left"></em>
+    </button>
+    <div class="col-12">
+        <app-header-job *ngIf="job.id != null" [job]="job"></app-header-job>
+    </div>
+    <div class="col-lg-12">
+        <!-- START card-->
+        <div class="card card-default">
+            <div class="card-body">
+                <fieldset>
+                    <legend>Componentes</legend>
+                    <div class="row">
+                        <div class="col-12" *ngIf="claims['admin']">
+                            <label for="plane" class="file-upload float-right">
+                                <button class="btn btn-secondary btn-block" (click)="componentModal.show()">Nuevo componente</button>
+                            </label>
+                        </div>
+                        <app-card-job *ngFor="let component of this.job.components" class="col-xl-4" [job]="component" (click)="changeJob(component.id)"></app-card-job>
+                        <div [hidden]="!claims['admin']" class="modal fade" bsModal #componentModal="bs-modal" tabindex="-1" role="dialog" aria-labelledby="componentModal" aria-hidden="true">
+                            <div class="modal-dialog modal-sm">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <legend>Nuevo componente</legend>
+                                        <button aria-label="Close" class="close" type="button" data-dismiss="modal" (click)="componentModal.hide()"><span aria-hidden="true">×</span></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <app-link-job [job]="selectedComponent" (selectedJob)="selectedComponent = $event"></app-link-job>
+                                        <fieldset>
+                                            <div class="text-right" *ngIf="selectedComponent.id != null">
+                                                <button class="btn btn-info" type="button" (click)="linkComponent(job.id, selectedComponent.id);componentModal.hide()">Guardar componente</button>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+        <!-- END card-->
+    </div>
+    <div class="col-lg-12">
+        <!-- START card-->
+        <div class="card card-default">
+            <div class="card-body">
+                <fieldset>
+                    <app-pictures-job [job]="job"></app-pictures-job>
+                </fieldset>
+            </div>
+        </div>
+        <!-- END card-->
+    </div>
+    <div class="col-lg-12">
+        <!-- START card-->
+        <div class="card card-default">
+            <div class="card-body">
+                <fieldset>
+                    <app-planes-job [job]="job"></app-planes-job>
+                </fieldset>
+            </div>
+        </div>
+        <!-- END card-->
+    </div>
+    <div class="col-lg-12">
+        <!-- START card-->
+        <div class="card card-default">
+            <div class="card-body">
+                <fieldset>
+                    <app-documents-job [job]="job"></app-documents-job>
+                </fieldset>
+            </div>
+        </div>
+        <!-- END card-->
+    </div>
+    <div class="col-lg-12" *ngIf="claims['admin']">
+        <!-- START card-->
+        <div class="card card-default">
+            <div class="card-body">
+                <fieldset>
+                    <app-history-job *ngIf="job.id != null" [job]="job"></app-history-job>
+                </fieldset>
+            </div>
+        </div>
+        <!-- END card-->
+    </div>
+</div>

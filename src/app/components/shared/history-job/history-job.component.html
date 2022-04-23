@@ -1,0 +1,65 @@
+<legend>Historial</legend>
+<div class="row">
+    <div class="col-12" style="margin-bottom: 40px">
+        <div class="card card-default">
+            <div class="card-header" style="border-bottom: 1px solid #eee;">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="btn-group">
+                            <label class="btn btn-primary" [(ngModel)]="yearSelected" (click)="findAll(job.id)" btnRadio="Todos">Todos</label>
+                            <label *ngFor="let year of years" [(ngModel)]="yearSelected" class="btn btn-primary" (click)="findAll(job.id, year)" btnRadio="{{year}}">{{year}}</label>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <button (click)="exportAsXLSX()" class="mb-1 mr-1 btn btn-success float-right">Exportar</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <p class="float-right badge badge-info" *ngIf="jobOrders?.length">Cantidad: {{ jobOrders?.length }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- START table-responsive-->
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover" id="table-ext-1">
+                        <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>N° OC</th>
+                                <th>N° Remito</th>
+                                <th>N° Factura</th>
+                                <th>F. Despacho</th>
+                                <th>Estado</th>
+                                <th>% Avance</th>
+                                <th class="actions-column-3">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let jobOrder of jobOrders">
+                                <td>{{ jobOrder.id }}</td>
+                                <td>{{ jobOrder.purchase_order_number }}</td>
+                                <td>{{ jobOrder.remit_number }}</td>
+                                <td>{{ jobOrder.bill_number }}</td>
+                                <td>{{ jobOrder.delivery_date }}</td>
+                                <td class="text-center">
+                                    <span class="badge" [ngClass]="{'badge-success': jobOrder.current_state == 'En proceso activo', 'badge-warning': jobOrder.current_state == 'Pendiente', 'badge-danger': jobOrder.current_state == 'En proceso frenado', 'badge-info':jobOrder.current_state == 'Terminado'}">
+                                      {{ jobOrder.current_state}}
+                                  </span>
+                                </td>
+                                <td>
+                                    <span [sparkline]="sparkOptionPie" values="{{ jobOrder.percentage_advance / 10 }},{{ 10 - jobOrder.percentage_advance / 10 }}"></span>
+                                </td>
+                                <td class="actions-column-3 ">
+                                    <a target="_blank" class="mb-1 mr-1 btn btn-info" [routerLink]="['/jobOrders', 'view',  jobOrder.id]"><i class="fas fa-file-alt "></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- END table-responsive-->
+        </div>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+<div class="content-heading">Listado de tipos de trabajos</div>
+<div class="row">
+    <div class="col-12">
+        <button (click)="addKind()" class="mb-1 mr-1 btn btn-success float-right" type="button">Nuevo tipo de trabajo</button>
+    </div>
+    <div class="col-12 mt-3">
+        <div class="card card-default">
+            <!-- START table-responsive-->
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover" id="table-ext-1">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nombre</th>
+                            <th>Contexto</th>
+                            <th class="actions-column-standard">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let kind of kinds">
+                            <td>{{ kind.id }}</td>
+                            <td>{{ kind.name }}</td>
+                            <td>{{ contexts[kind.context] }}</td>
+                            <td class="actions-column-standard">
+                                <button class="mb-1 mr-1 btn btn-primary" type="button" (click)=editKind(kind.id)><i class="fas fa fa-edit"></i></button>
+                                <button class="mb-1 mr-1 btn btn-danger" type="button" (click)=deleteKind(kind.id)><i class="fas fa fa-trash-alt"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- END table-responsive-->
+        </div>
+    </div>
+</div>

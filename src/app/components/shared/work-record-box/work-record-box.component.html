@@ -1,0 +1,110 @@
+<div class="md-card">
+    <div class="md-card-body bg-info shadow-z1">
+        <div class="row text-center">
+            <div class="col-6">
+                <h2 class="mt-0 mb-2">{{totalHours()}}</h2>
+            </div>
+            <div class="col-6">
+                <a class="mb text-white" href="javascript:void(0)" (click)="WorkRecordModal.show()">
+                    <em class="fa fa-plus-circle fa-2x"></em>
+                </a>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-6">
+                <p class="m-0">Total horas trabajadas</p>
+            </div>
+            <div class="col-6">
+                <p class="m-0">Nuevo registro</p>
+            </div>
+        </div>
+    </div>
+    <!-- START row-->
+    <div class="row">
+        <div class="col-12">
+            <!-- START card-->
+            <div class="card card-default mb-0">
+                <div class="card-body">
+                    <!-- START table-responsive-->
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Operario</th>
+                                    <th>Fecha</th>
+                                    <th>Hs</th>
+                                    <th style="width: 74px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let wRecord of workRecords">
+                                    <td>{{wRecord.worker.name}}</td>
+                                    <td>{{wRecord.registerDate}}</td>
+                                    <td>{{wRecord.hours}}</td>
+                                    <td>
+                                        <button class="mb-1 mr-1 btn btn-danger" type="button" (click)="delete(wRecord.id)"><i class="fas fa fa-trash-alt"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- END table-responsive-->
+                </div>
+            </div>
+            <!-- END card-->
+        </div>
+    </div>
+</div>
+<div class="modal fade" bsModal #WorkRecordModal="bs-modal" tabindex="-1" role="dialog" aria-labelledby="WorkRecordModalModal" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <legend>Nuevo registro</legend>
+                <button aria-label="Close" class="close" type="button" data-dismiss="modal" (click)="WorkRecordModal.hide()"><span aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                <fieldset>
+                    <div class="form-group row">
+                        <label class="col-lg-2 col-form-label text-lg-right">Operario</label>
+                        <div class="col-lg-8">
+                            <select class="custom-select custom-select-sm" [(ngModel)]="workRecord.worker" name="worker_name" required>
+                                <option disable >Seleccione estado</option>
+                                <option *ngFor="let worker of workers" [ngValue]="worker" >{{worker.name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2">
+                            <small class="text-muted">* Dato obligatorio</small>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <div class="form-group row">
+                        <label class="col-lg-2 col-form-label text-lg-right">Fecha</label>
+                        <div class="col-lg-8">
+                            <input [(ngModel)]="workRecord.registerDate" required class="form-control" type="date" name="registerDate" />
+                        </div>
+                        <div class="col-lg-2">
+                            <small class="text-muted">* Dato obligatorio</small>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <div class="form-group row">
+                        <label class="col-lg-2 col-form-label text-lg-right">Horas</label>
+                        <div class="col-lg-8">
+                            <input [(ngModel)]="workRecord.hours" class="form-control" type="number" name="hours" />
+                        </div>
+                        <div class="col-lg-2">
+                            <small class="text-muted">* Dato obligatorio</small>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <div class="text-right" *ngIf="worker != null && workRecord.registerDate  && workRecord.hours ">
+                        <button class="btn btn-info" type="button" (click)="save(WorkRecordModal);">Guardar</button>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</div>

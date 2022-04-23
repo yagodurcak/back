@@ -1,0 +1,31 @@
+<div class="md-card">
+    <div class="md-card-heading bg-info shadow-z1">
+        <div class="float-right">
+            <h3 class="m-0 text-lg">
+                <inline-editor *ngIf="claims['admin']" empty="Sin selección" type="select" [(ngModel)]="job.kind.name" (onSave)="save($event, 'description')" name="job_kind" size="50" [options]="kindsName"></inline-editor>
+                {{!claims['admin'] ? job.kind.name : ''}}
+            </h3>
+        </div>
+        <div class="md-card-title">
+            <inline-editor *ngIf="claims['admin']" type="text" [(ngModel)]="job.number" (onSave)="save($event)" name="job_number" size="50"></inline-editor>
+            {{!claims['admin'] ? job.number : ''}}
+        </div>
+        <small>&nbsp;&nbsp;&nbsp;</small>
+    </div>
+    <div class="md-card-body">
+        <div class="clearfix">
+            <div class="float-left">
+                <p>
+                    <inline-editor *ngIf="claims['admin']" type="text" [(ngModel)]="job.description" (onSave)="save($event)" name="job_description" size="250"></inline-editor>
+                    {{!claims['admin'] ? job.description : ''}}
+                </p>
+            </div>
+            <div class="float-right">
+                <h3 class="m-0">
+                    <inline-editor *ngIf="claims['admin']" type="text" [(ngModel)]="job.item" (onSave)="save($event)" name="job_item" size="50"></inline-editor>
+                    {{!claims['admin'] ? job.item : ''}}
+                </h3>
+            </div>
+        </div>
+    </div>
+</div>

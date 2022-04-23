@@ -1,0 +1,93 @@
+<div class="content-heading">Listado de ordenes de trabajo</div>
+<div class="row">
+    <div class="col-8">
+        <div class="btn-group">
+            <label class="btn btn-primary" [(ngModel)]="state" (click)="findAll()" btnRadio="" *ngIf="claims['admin']">Todos</label>
+            <label class="btn btn-primary" [(ngModel)]="state" (click)="findAll()" btnRadio="Pendiente">Pendiente</label>
+            <label class="btn btn-primary" [(ngModel)]="state" (click)="findAll()" btnRadio="En proceso activo">En proceso activo</label>
+            <label class="btn btn-primary" [(ngModel)]="state" (click)="findAll()" btnRadio="En proceso frenado">En proceso frenado</label>
+            <label class="btn btn-primary" [(ngModel)]="state" (click)="findAll()" btnRadio="Terminado">Terminado</label>
+            <label class="btn btn-primary" [(ngModel)]="state" (click)="findAll()" btnRadio="Entregado" *ngIf="claims['admin']">Entregado</label>
+            <label class="btn btn-primary" [(ngModel)]="state" (click)="findAll()" btnRadio="Cancelado" *ngIf="claims['admin']">Cancelado</label>
+        </div>
+    </div>
+    <div class="col-4" *ngIf="claims['admin']">
+        <button (click)="addJobOrder()" class="mb-1 mr-1 btn btn-success float-right" type="button">Nueva orden trabajo</button>
+    </div>
+    <div class="col-12 mt-3">
+        <div class="card card-default">
+            <div class="card-header" style="border-bottom: 1px solid #eee;">
+                <div class="mb-3">
+                    <div class="input-group">
+                        <input class="form-control" type="text" placeholder="Ingrese dato que desea buscar" [(ngModel)]="query" (keydown.enter)="findAll()" />
+                        <div class=" input-group-append ">
+                            <button class="btn btn-secondary " type="Search " (click)="findAll() ">Buscar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row ">
+                    <pagination class="col-md-9 col-sm-12 " [maxSize]="5 " [rotate]="false " [directionLinks]="false " [itemsPerPage]="userPageSize " [totalItems]="totalElements " [(ngModel)]="currentPage " (pageChanged)="pageChanged($event) "></pagination>
+                    <div class="col-md-3 col-sm-12 ">
+                        <div class="input-group float-right ">
+                            <select class="custom-select " id="inputGroupSelect04 " [(ngModel)]="userPageSize " (change)="findAll() ">
+                                <option value="0 ">Tamaño de página</option>
+                                <option value="10 ">10</option>
+                                <option value="20 ">20</option>
+                                <option value="50 ">50</option>
+                                <option value="100 ">100</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- START table-responsive-->
+            <div class="table-responsive ">
+                <table class="table table-striped table-bordered table-hover " id="table-ext-1 ">
+                    <thead>
+                        <tr>
+                            <th>N°</th>
+                            <th>N° de OC</th>
+                            <th>Tipo</th>
+                            <th>F. CCC</th>
+                            <th>Cantidad</th>
+                            <th>Estado</th>
+                            <th>% Avance</th>
+                            <th>N° T</th>
+                            <th>Trabajo</th>
+                            <th style="width:300px; ">Foto T</th>
+                            <th class="actions-column-3 ">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let jobOrder of jobOrders ">
+                            <td>{{ jobOrder.id }}</td>
+                            <td>{{ jobOrder.purchase_order_number }}</td>
+                            <td>{{ jobOrder.kind.name }}</td>
+                            <td>{{ jobOrder.compromised_date }}</td>
+                            <td>{{ jobOrder.jobs_amount }}</td>
+                            <td class="text-center ">
+                                <span class="badge " [ngClass]="{ 'badge-success': jobOrder.current_state=='En proceso activo' , 'badge-warning': jobOrder.current_state=='Pendiente' , 'badge-danger': jobOrder.current_state=='En proceso frenado' ,
+                            'badge-info':jobOrder.current_state=='Terminado' } ">
+                                    {{ jobOrder.current_state}}
+                                </span>
+                            </td>
+                            <td>
+                                <span [sparkline]="sparkOptionPie " values="{{ jobOrder.percentage_advance / 10 }},{{ 10 - jobOrder.percentage_advance / 10 }} "></span></td>
+                            <td>{{ jobOrder.job.number }}</td>
+                            <td>{{ jobOrder.job.description }}</td>
+                            <td>
+                                <div class="col-12 ">
+                                    <div *ngIf="jobOrder.job.pictures?.length> 0" class="md-card" class="picture-background" [ngStyle]="{'background-image': 'url('+jobOrder.job.pictures[0].thumbnail+')'}"></div>
+                                </div>
+                            </td>
+                            <td class="actions-column-3 ">
+                                <button class="mb-1 mr-1 btn btn-info " type="button " (click)=viewJobOrder(jobOrder.id)><i class="fas fa-file-alt "></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- END table-responsive-->
+        </div>
+    </div>
+</div>

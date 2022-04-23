@@ -1,0 +1,14 @@
+<div class="content-heading">Nueva compra</div>
+<!-- START row-->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card card-default">
+                <div class="card-body">
+                    <app-add-purchases [purchase]="purchase" [requisitions]="[]" (savedPurchase)="viewPurchase($event.id)"></app-add-purchases>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END row-->
+</div>
